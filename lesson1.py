@@ -197,14 +197,10 @@ if prompt := st.chat_input("Message NexusAI..."):
             )
             generated_title = title_res.choices[0].message.content.strip()
             st.session_state.chats[st.session_state.current_chat_id]["title"] = generated_title
-
-        # Prepare Payload
-        if img_b64:
-           if prompt := st.chat_input("Message NexusAI..."):
+if prompt := st.chat_input("Message NexusAI..."):
     current_messages.append({"role": "user", "content": prompt})
     
     try:
-        # Generate Chat Title if it's the first message
         if len(current_messages) == 1:
             title_res = client.chat.completions.create(
                 model="llama3-8b-8192",
@@ -216,7 +212,6 @@ if prompt := st.chat_input("Message NexusAI..."):
             generated_title = title_res.choices[0].message.content.strip()
             st.session_state.chats[st.session_state.current_chat_id]["title"] = generated_title
 
-        # Prepare Payload
         if img_b64:
             model_name = "llama-3.2-11b-vision-preview"
             content_payload = [
@@ -229,7 +224,6 @@ if prompt := st.chat_input("Message NexusAI..."):
             full_sys = SYSTEM_PROMPT + (f"\n\nDocument Context:\n{file_context}" if file_context else "")
             messages_payload = [{"role": "system", "content": full_sys}] + current_messages
 
-        # Get API Response
         response = client.chat.completions.create(
             model=model_name,
             messages=messages_payload
