@@ -198,32 +198,22 @@ if prompt := st.chat_input(f"Message {AI_NAME}..."):
                 ]
             )
             generated_title = title_res.choices[0].message.content.strip()
-            if generated_title:
-                st.session_state.chats[generated_title] = st.session_state.chats.pop(st.session_state.current_chat_title)
-                st.session_state.current_chat_title = generated_title
-        except Exception:
-            pass
-
-    current_messages.append({"role": "user", "content": prompt})
-    st.markdown(f'<div class="chat-container"><div class="user-msg">{prompt}</div></div>', unsafe_allow_html=True)
-
-    try:
-        if img_b64:
+           if img_b64:
             model_name = "llama-3.2-11b-vision-preview"
             content_payload = [
                 {"type": "text", "text": prompt},
                 {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{img_b64}"}}
             ]
             messages_payload = [{"role": "user", "content": content_payload}]
-      else:
+        else:
             model_name = "llama-3.1-8b-instant"
             full_sys = SYSTEM_PROMPT + (f"\n\nDocument Context:\n{file_context}" if file_context else "")
             messages_payload = [{"role": "system", "content": full_sys}] + current_messages
+
         response = client.chat.completions.create(
             model=model_name,
             messages=messages_payload
         )
-        
         reply = response.choices[0].message.content
         current_messages.append({"role": "assistant", "content": reply})
         st.rerun()
