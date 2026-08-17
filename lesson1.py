@@ -182,15 +182,13 @@ for idx, msg in enumerate(current_messages):
                 </div>
             </div>
         ''', unsafe_allow_html=True)
-
-# User Chat Input
-if prompt := st.chat_input(f"Message {AI_NAME}..."):
-    client = Groq(api_key=GROQ_API_KEY)
-
-    # Smart Title Naming
-    if len(current_messages) == 0 and ("New Chat" in st.session_state.current_chat_title):
-        try:
-         title_res = client.chat.completions.create(
+if prompt := st.chat_input("Message NexusAI..."):
+    current_messages.append({"role": "user", "content": prompt})
+    
+    try:
+        # Generate Chat Title if it's the first message
+        if len(current_messages) == 1:
+            title_res = client.chat.completions.create(
                 model="llama-3.1-8b-instant",
                 messages=[
                     {"role": "system", "content": "Generate a very short 3-5 word title summarizing the user's topic. Do not use quotes or special characters."},
@@ -198,7 +196,9 @@ if prompt := st.chat_input(f"Message {AI_NAME}..."):
                 ]
             )
             generated_title = title_res.choices[0].message.content.strip()
+            st.session_state.chats[st.session_state.current_chat_id]["title"] = generated_title
 
+        # Prepare Payload
         if img_b64:
             model_name = "llama-3.2-11b-vision-preview"
             content_payload = [
@@ -211,6 +211,7 @@ if prompt := st.chat_input(f"Message {AI_NAME}..."):
             full_sys = SYSTEM_PROMPT + (f"\n\nDocument Context:\n{file_context}" if file_context else "")
             messages_payload = [{"role": "system", "content": full_sys}] + current_messages
 
+        # Get API Response
         response = client.chat.completions.create(
             model=model_name,
             messages=messages_payload
@@ -218,5 +219,7 @@ if prompt := st.chat_input(f"Message {AI_NAME}..."):
         reply = response.choices[0].message.content
         current_messages.append({"role": "assistant", "content": reply})
         st.rerun()
+
     except Exception as e:
         st.error(f"Error: {e}")
+   
