@@ -190,7 +190,7 @@ if prompt := st.chat_input(f"Message {AI_NAME}..."):
     # Smart Title Naming
     if len(current_messages) == 0 and ("New Chat" in st.session_state.current_chat_title):
         try:
-          title_res = client.chat.completions.create(
+         title_res = client.chat.completions.create(
                 model="llama-3.1-8b-instant",
                 messages=[
                     {"role": "system", "content": "Generate a very short 3-5 word title summarizing the user's topic. Do not use quotes or special characters."},
@@ -217,6 +217,6 @@ if prompt := st.chat_input(f"Message {AI_NAME}..."):
         )
         reply = response.choices[0].message.content
         current_messages.append({"role": "assistant", "content": reply})
-        st.rerun()  
+        st.rerun()
     except Exception as e:
         st.error(f"Error: {e}")
