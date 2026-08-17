@@ -216,7 +216,7 @@ if prompt := st.chat_input(f"Message {AI_NAME}..."):
             ]
             messages_payload = [{"role": "user", "content": content_payload}]
         else:
-            model_name = "llama-3.3-70b-versatile"
+          model_name = "llama-3.1-8b-instant"
             full_sys = SYSTEM_PROMPT + (f"\n\nDocument Context:\n{file_context}" if file_context else "")
             messages_payload = [{"role": "system", "content": full_sys}] + current_messages
 
