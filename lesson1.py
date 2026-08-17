@@ -7,8 +7,8 @@ from pypdf import PdfReader
 st.set_page_config(page_title="NexusAI Assistant", page_icon="⚡", layout="wide")
 
 # HARDCODED API KEY (რომ მომხმარებლებს ჩაწერა არ დასჭირდეთ)
-GROQ_API_KEY = st.secrets["GROQ_API_KEY"]  # <--- აქ ჩასვი შენი API Key
-
+GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
+client = Groq(api_key=GROQ_API_KEY)
 # Custom Styling
 st.markdown("""
     <style>
