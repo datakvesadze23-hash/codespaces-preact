@@ -189,7 +189,25 @@ if prompt := st.chat_input("Message NexusAI..."):
         # Generate Chat Title if it's the first message
         if len(current_messages) == 1:
             title_res = client.chat.completions.create(
-                model="llama-3.1-8b-instant",
+                model="llama3-8b-8192",
+                messages=[
+                    {"role": "system", "content": "Generate a very short 3-5 word title summarizing the user's topic. Do not use quotes or special characters."},
+                    {"role": "user", "content": prompt}
+                ]
+            )
+            generated_title = title_res.choices[0].message.content.strip()
+            st.session_state.chats[st.session_state.current_chat_id]["title"] = generated_title
+
+        # Prepare Payload
+        if img_b64:
+           if prompt := st.chat_input("Message NexusAI..."):
+    current_messages.append({"role": "user", "content": prompt})
+    
+    try:
+        # Generate Chat Title if it's the first message
+        if len(current_messages) == 1:
+            title_res = client.chat.completions.create(
+                model="llama3-8b-8192",
                 messages=[
                     {"role": "system", "content": "Generate a very short 3-5 word title summarizing the user's topic. Do not use quotes or special characters."},
                     {"role": "user", "content": prompt}
@@ -207,7 +225,7 @@ if prompt := st.chat_input("Message NexusAI..."):
             ]
             messages_payload = [{"role": "user", "content": content_payload}]
         else:
-            model_name = "llama-3.1-8b-instant"
+            model_name = "llama3-8b-8192"
             full_sys = SYSTEM_PROMPT + (f"\n\nDocument Context:\n{file_context}" if file_context else "")
             messages_payload = [{"role": "system", "content": full_sys}] + current_messages
 
@@ -222,4 +240,3 @@ if prompt := st.chat_input("Message NexusAI..."):
 
     except Exception as e:
         st.error(f"Error: {e}")
-   
